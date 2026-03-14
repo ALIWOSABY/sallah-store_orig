@@ -221,10 +221,23 @@ salla-wishlist-btn,
   transition:      background .2s !important;
 }
 salla-wishlist-btn:hover { background:rgba(255,71,87,.22) !important; }
+/* Center the inner button element inside the web component */
+salla-wishlist-btn button {
+  display:         flex !important;
+  align-items:     center !important;
+  justify-content: center !important;
+  width:           100% !important;
+  height:          100% !important;
+  background:      transparent !important;
+  border:          none !important;
+  padding:         0 !important;
+  cursor:          pointer !important;
+}
 salla-wishlist-btn svg, salla-wishlist-btn i,
 [class*="wishlist-btn"] svg, [class*="wishlist-btn"] i {
   stroke:#ff4757 !important; fill:none !important;
   width:clamp(16px,4vw,20px) !important; height:clamp(16px,4vw,20px) !important;
+  display:block !important; margin:auto !important;
 }
 /* Wishlisted (filled) state */
 salla-wishlist-btn[wishlisted] svg,
@@ -394,6 +407,18 @@ salla-quantity-input,[class*="quantity-wrap"],[class*="qty-wrap"] {
 /* ═══════════════════════════════════════════════════════════
    CART PAGE
 ══════════════════════════════════════════════════════════════ */
+/* Cart page wrapper transparent */
+salla-cart,[class*="cart-page"],[class*="s-cart"],
+[class*="cart-layout"],[class*="cart-view"] {
+  background: transparent !important;
+}
+/* Cart page title */
+[class*="cart-page"] [class*="title"],
+[class*="s-cart"] [class*="title"],
+.s-cart__title {
+  font-size:clamp(20px,5vw,28px) !important;font-weight:800 !important;
+  color:var(--dark) !important;text-transform:uppercase !important;letter-spacing:.05em !important;
+}
 [class*="cart-item"],salla-cart-item {
   background:    var(--card2) !important;
   border-radius: clamp(16px,4vw,22px) !important;
@@ -432,9 +457,22 @@ salla-quantity-input,[class*="quantity-wrap"],[class*="qty-wrap"] {
   width:26px !important;height:26px !important;
   display:flex !important;align-items:center !important;justify-content:center !important;
 }
+/* salla-cart-item image */
+salla-cart-item [class*="image"],salla-cart-item [class*="img"],
+salla-cart-item [class*="thumb"],salla-cart-item img {
+  background:#fff !important;border-radius:clamp(10px,2.5vw,16px) !important;
+  padding:6px !important;width:clamp(70px,18vw,90px) !important;height:clamp(70px,18vw,90px) !important;
+  object-fit:contain !important;flex-shrink:0 !important;
+}
+/* salla-cart-item qty pill */
+salla-cart-item salla-quantity-input,
+salla-quantity-input {
+  background:rgba(26,20,17,.06) !important;border-radius:999px !important;
+  padding:4px 10px !important;display:inline-flex !important;align-items:center !important;gap:8px !important;
+}
 /* Cart summary — glassmorphism */
 [class*="cart-summary"],[class*="cart-total"],
-[class*="order-summary"],[class*="price-summary"] {
+salla-cart [class*="summary"],[class*="order-summary"],[class*="price-summary"] {
   background:        var(--glass) !important;
   backdrop-filter:   blur(10px) !important;
   -webkit-backdrop-filter:blur(10px) !important;
