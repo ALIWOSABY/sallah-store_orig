@@ -1,5 +1,5 @@
 /* ============================================================
-   COZY STYLE — Salla Raed Theme JavaScript  v5
+   COZY STYLE — Salla Raed Theme JavaScript  v7
    الصقه في: محرر الثيم ← تخصيص متقدم ← تخصيص باستخدام JavaScript
    ============================================================ */
 (function(){
@@ -65,9 +65,9 @@ function injectHero(){
             '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>'+
           '</a>'+
         '</div>'+
-        '<a href="/menu" class="ch-ibtn" style="width:auto;text-decoration:none" aria-label="Menu">'+
+        '<button class="ch-ibtn" id="cozy-menu-open-btn" style="width:auto;border:none;cursor:pointer;background:transparent" aria-label="Menu">'+
           '<div class="ch-menu-btn"><span></span><span></span></div>'+
-        '</a>'+
+        '</button>'+
       '</div>'+
       /* 2-col grid */
       '<div class="ch-grid">'+
@@ -103,6 +103,10 @@ function injectHero(){
     if(e.key==='Enter' && this.value)
       window.location = '/search?q=' + encodeURIComponent(this.value);
   });
+
+  /* Menu button */
+  var menuBtn = document.getElementById('cozy-menu-open-btn');
+  if(menuBtn) menuBtn.addEventListener('click', openMenuOverlay);
 
   initCarousel();
 }
@@ -347,12 +351,268 @@ function injectBottomNav(){
     /* Cart */
     '<a href="/cart" class="cnb-btn" aria-label="Cart">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>'+
-    '</a>';
+    '</a>'+
+    /* Menu toggle */
+    '<button class="cnb-btn" id="cnb-menu-btn" aria-label="Menu" style="border:none;cursor:pointer;background:transparent">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>'+
+    '</button>';
 
   document.body.appendChild(nav);
+
+  /* bind menu button after appended */
+  var mb = document.getElementById('cnb-menu-btn');
+  if(mb) mb.addEventListener('click', openMenuOverlay);
 }
 
-/* ══ 8. MUTATION OBSERVER — re-run on dynamic load ═════════ */
+/* ══ 8. MENU OVERLAY ═══════════════════════════════════════ */
+var _menuItems = null;
+
+/* Default fallback nav items */
+var DEFAULT_MENU = [
+  { icon:'🏠', name:'الرئيسية',     url:'/'             },
+  { icon:'🛋️', name:'أثاث',         url:'/categories'   },
+  { icon:'🪴', name:'إكسسوارات',    url:'/categories'   },
+  { icon:'✨', name:'وصل حديثاً',   url:'/products/new' },
+  { icon:'🔥', name:'عروض خاصة',    url:'/products/sale'},
+  { icon:'❤️', name:'المفضلة',      url:'/wishlist'     }
+];
+
+function buildMenuItems(items){
+  return items.map(function(item){
+    return '<a href="'+item.url+'" class="cmo-cat-item">'+
+      '<div class="cmo-cat-left">'+
+        '<span class="cmo-cat-icon">'+(item.icon||'🏷️')+'</span>'+
+        '<span class="cmo-cat-name">'+item.name+'</span>'+
+      '</div>'+
+      '<svg class="cmo-cat-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>'+
+    '</a>';
+  }).join('');
+}
+
+function loadSallaNavigation(cb){
+  if(_menuItems){ cb(_menuItems); return; }
+
+  /* Try Salla store menus object first */
+  try {
+    var sallaMenus = window.salla && window.salla.store && window.salla.store.menus;
+    if(sallaMenus && sallaMenus.length){
+      var items = sallaMenus.map(function(m){
+        return { icon:'🏷️', name: m.name || m.title || m.label, url: m.url || m.link || '#' };
+      });
+      _menuItems = items;
+      return cb(items);
+    }
+  } catch(e){}
+
+  /* Try Salla categories API */
+  fetch('/api/store/v1/categories', { credentials:'same-origin' })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      if(data && data.data && data.data.length){
+        var icons = ['🏠','🛋️','🪴','✨','🔥','❤️','🎁','🏷️'];
+        var items = data.data.slice(0,8).map(function(cat, i){
+          return { icon: icons[i] || '🏷️', name: cat.name, url: cat.url || ('/categories/'+cat.id) };
+        });
+        _menuItems = items;
+        cb(items);
+      } else {
+        throw new Error('no categories');
+      }
+    })
+    .catch(function(){
+      /* Try menus API */
+      fetch('/api/store/v1/menus', { credentials:'same-origin' })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(data){
+          if(data && data.data && data.data.length){
+            var items = data.data.slice(0,8).map(function(m){
+              return { icon:'🏷️', name: m.name, url: m.url || '#' };
+            });
+            _menuItems = items;
+            cb(items);
+          } else {
+            throw new Error('no menus');
+          }
+        })
+        .catch(function(){
+          _menuItems = DEFAULT_MENU;
+          cb(DEFAULT_MENU);
+        });
+    });
+}
+
+function injectMenuOverlay(){
+  if(document.getElementById('cmo-overlay')) return;
+
+  /* Backdrop */
+  var backdrop = document.createElement('div');
+  backdrop.id = 'cmo-backdrop';
+  backdrop.addEventListener('click', closeMenuOverlay);
+  document.body.appendChild(backdrop);
+
+  /* Overlay wrap */
+  var ov = document.createElement('div');
+  ov.id = 'cmo-overlay';
+  ov.setAttribute('aria-modal','true');
+  ov.setAttribute('role','dialog');
+  ov.setAttribute('aria-label','القائمة الرئيسية');
+  ov.innerHTML =
+    '<div class="cmo-wrap">'+
+
+      /* Header */
+      '<div class="cmo-header">'+
+        '<img class="cmo-brand-logo" src="'+GH+'logo-menu.png" alt="Cozy Style" onerror="this.style.display=\'none\'">'+
+        '<button class="cmo-close-btn" id="cmo-close-btn" aria-label="Close">'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="#1A1411" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">'+
+            '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'+
+          '</svg>'+
+        '</button>'+
+      '</div>'+
+
+      /* Category list placeholder */
+      '<div class="cmo-cat-list" id="cmo-cat-list">'+
+        '<div class="cmo-loading">Loading…</div>'+
+      '</div>'+
+
+      /* Footer */
+      '<div class="cmo-footer">'+
+        '<div class="cmo-sub-links">'+
+          '<a href="/contactus" class="cmo-sub-link">تواصل معنا</a>'+
+          '<a href="/profile"   class="cmo-sub-link">حسابي</a>'+
+          '<a href="/orders"    class="cmo-sub-link">تتبع الطلب</a>'+
+          '<a href="#"          class="cmo-sub-link">من نحن</a>'+
+          '<a href="/policy"    class="cmo-sub-link">الشروط والأحكام</a>'+
+        '</div>'+
+        '<div class="cmo-social-row">'+
+          '<a href="https://www.instagram.com/" target="_blank" class="cmo-soc-icon">'+
+            '<img src="'+GH+'instagram.png" alt="Instagram" onerror="this.style.display=\'none\'">'+
+          '</a>'+
+          '<a href="https://www.tiktok.com/" target="_blank" class="cmo-soc-icon">'+
+            '<img src="'+GH+'tiktok.png" alt="TikTok" onerror="this.style.display=\'none\'">'+
+          '</a>'+
+          '<a href="https://wa.me/966503676809" target="_blank" class="cmo-soc-icon">'+
+            '<img src="'+GH+'whatsapp.png" alt="WhatsApp" onerror="this.style.display=\'none\'">'+
+          '</a>'+
+        '</div>'+
+      '</div>'+
+
+    '</div>';
+
+  document.body.appendChild(ov);
+
+  /* Close button */
+  document.getElementById('cmo-close-btn').addEventListener('click', closeMenuOverlay);
+
+  /* ESC key */
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeMenuOverlay();
+  });
+
+  /* Load navigation items */
+  loadSallaNavigation(function(items){
+    var list = document.getElementById('cmo-cat-list');
+    if(list) list.innerHTML = buildMenuItems(items);
+  });
+}
+
+function openMenuOverlay(){
+  if(!document.getElementById('cmo-overlay')) injectMenuOverlay();
+
+  var ov = document.getElementById('cmo-overlay');
+  var bd = document.getElementById('cmo-backdrop');
+  if(!ov) return;
+
+  document.body.style.overflow = 'hidden';
+  if(bd){ bd.style.display = 'block'; requestAnimationFrame(function(){ bd.style.opacity = '1'; }); }
+  ov.classList.add('cmo-open');
+}
+
+function closeMenuOverlay(){
+  var ov = document.getElementById('cmo-overlay');
+  var bd = document.getElementById('cmo-backdrop');
+  if(ov) ov.classList.remove('cmo-open');
+  if(bd){ bd.style.opacity = '0'; setTimeout(function(){ bd.style.display = 'none'; }, 300); }
+  document.body.style.overflow = '';
+}
+
+/* ══ 9. PRODUCT CARDS — Shadow DOM injection ════════════════ */
+var SHADOW_CSS =
+  ':host,[part="card"]{'+
+    'background:rgba(252,248,244,.95)!important;'+
+    'border-radius:clamp(14px,3.5vw,22px)!important;'+
+    'padding:clamp(10px,2.5vw,16px)!important;'+
+    'display:flex!important;flex-direction:column!important;align-items:center!important;'+
+    'box-shadow:0 4px 18px rgba(0,0,0,.07)!important;'+
+    'border:none!important;'+
+    'overflow:hidden!important;'+
+  '}'+
+  '[part="image"],[class*="image"],[class*="img"]{'+
+    'border-radius:clamp(10px,2.5vw,16px)!important;'+
+    'background:#fff!important;'+
+    'aspect-ratio:1!important;'+
+    'width:100%!important;object-fit:contain!important;'+
+  '}'+
+  '[part="add-to-cart"],button[class*="add"],[class*="add-btn"]{'+
+    'background:linear-gradient(135deg,#1A1411 0%,#755C4C 100%)!important;'+
+    'border-radius:999px!important;'+
+    'width:100%!important;'+
+    'padding:clamp(10px,2.5vw,14px) 6px!important;'+
+    'color:#fff!important;font-weight:800!important;'+
+    'border:none!important;cursor:pointer!important;'+
+    'font-size:clamp(12px,3vw,14px)!important;'+
+  '}'+
+  '[part="wishlist"],button[class*="wish"],[class*="wish-btn"]{'+
+    'background:linear-gradient(135deg,#1A1411 0%,#755C4C 100%)!important;'+
+    'border-radius:clamp(10px,2.5vw,15px)!important;'+
+    'width:clamp(34px,8.5vw,48px)!important;'+
+    'height:clamp(34px,8.5vw,48px)!important;'+
+    'border:none!important;cursor:pointer!important;'+
+  '}'+
+  '[part="wishlist"] svg,[class*="wish-btn"] svg{'+
+    'stroke:#fff!important;fill:none!important;'+
+  '}'+
+  '[part="name"],[class*="name"]{'+
+    'font-weight:700!important;font-size:clamp(13px,3.2vw,15px)!important;'+
+    'color:#1A1411!important;text-align:center!important;margin-top:8px!important;'+
+  '}'+
+  '[part="price"],[class*="price"]{'+
+    'font-weight:900!important;color:#755C4C!important;'+
+    'font-size:clamp(14px,3.5vw,17px)!important;'+
+  '}';
+
+function styleProductCards(){
+  var cards = document.querySelectorAll('salla-product-card');
+  cards.forEach(function(card){
+    if(card._cozyStyled) return;
+    card._cozyStyled = true;
+
+    function injectShadow(){
+      if(!card.shadowRoot) return;
+      var existing = card.shadowRoot.querySelector('#cozy-shadow-style');
+      if(existing) return;
+      var st = document.createElement('style');
+      st.id = 'cozy-shadow-style';
+      st.textContent = SHADOW_CSS;
+      card.shadowRoot.appendChild(st);
+    }
+
+    /* If shadow root already open, inject now */
+    if(card.shadowRoot){ injectShadow(); return; }
+
+    /* Wait for shadow root via MutationObserver on the card */
+    var ob = new MutationObserver(function(){
+      if(card.shadowRoot){ injectShadow(); ob.disconnect(); }
+    });
+    ob.observe(card, {childList:true, subtree:true, attributes:true});
+
+    /* Also watch for custom element upgrade */
+    customElements.whenDefined(card.localName).then(function(){
+      setTimeout(function(){ if(card.shadowRoot) injectShadow(); }, 100);
+    }).catch(function(){});
+  });
+}
+
+/* ══ 10. MUTATION OBSERVER — re-run on dynamic load ════════ */
 function observe(){
   var ob = new MutationObserver(function(){
     injectHeader();
@@ -360,6 +620,7 @@ function observe(){
     injectContactSection();
     injectBottomNav();
     fixBackgrounds();
+    styleProductCards();
     /* Hero + Slider only on homepage */
     if(isHomepage()){
       injectHero();
@@ -379,13 +640,13 @@ ready(function(){
   fixBackgrounds();
   injectHeader();
   injectBottomNav();
+  styleProductCards();
   if(isHomepage()){
     injectHero();
     injectSlider();
     injectAccPill();
     injectContactSection();
   } else {
-    /* On inner pages inject contact section above footer */
     injectContactSection();
   }
   observe();
@@ -394,6 +655,7 @@ ready(function(){
     injectHeader();
     injectBottomNav();
     fixBackgrounds();
+    styleProductCards();
     if(isHomepage()){
       injectHero();
       injectSlider();
