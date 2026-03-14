@@ -1,5 +1,5 @@
 /* ============================================================
-   COZY STYLE — Salla Raed Theme JavaScript  v5
+   COZY STYLE — Salla Raed Theme JavaScript  v7
    الصقه في: محرر الثيم ← تخصيص متقدم ← تخصيص باستخدام JavaScript
    ============================================================ */
 (function(){
@@ -20,12 +20,10 @@ function injectHeader(){
   var hdr = document.createElement('div');
   hdr.id = 'cozy-header';
   hdr.innerHTML =
-    /* Announcement bar */
     '<div class="ch-announce">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex-shrink:0"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>'+
       '<span>شحن مجاني على الطلبات التي تزيد عن 200 ريال</span>'+
     '</div>'+
-    /* Header strip */
     '<div class="ch-strip">'+
       '<div class="ch-brand">'+
         '<div class="ch-brand-top">'+
@@ -55,7 +53,6 @@ function injectHero(){
   hero.id = 'cozy-hero';
   hero.innerHTML =
     '<div class="ch-body">'+
-      /* Topbar */
       '<div class="ch-topbar">'+
         '<div class="ch-topbar-left">'+
           '<a href="/login" class="ch-ibtn" aria-label="Login">'+
@@ -65,23 +62,20 @@ function injectHero(){
             '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>'+
           '</a>'+
         '</div>'+
-        '<a href="/menu" class="ch-ibtn" style="width:auto;text-decoration:none" aria-label="Menu">'+
+        '<button class="ch-ibtn ch-menu-open" style="width:auto;background:none;border:none;cursor:pointer;padding:0;" aria-label="Menu">'+
           '<div class="ch-menu-btn"><span></span><span></span></div>'+
-        '</a>'+
+        '</button>'+
       '</div>'+
-      /* 2-col grid */
       '<div class="ch-grid">'+
         '<div>'+
           '<h1 class="ch-title">Home<br>Decor<br>And More</h1>'+
           '<p class="ch-desc">All home decor and<br>accessories and all<br>things you need</p>'+
         '</div>'+
         '<div class="ch-right">'+
-          /* Search */
           '<div class="ch-search">'+
             '<svg viewBox="0 0 24 24" fill="none" stroke="#755C4C" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>'+
             '<input type="text" placeholder="Search…" id="cozySearchInput"/>'+
           '</div>'+
-          /* Glass carousel */
           '<div class="pk-wrap" id="pkWrap">'+
             '<div class="pk-stage" id="pkStage"></div>'+
             '<button class="pk-arr prev" id="pkPrev" aria-label="Previous">'+
@@ -97,12 +91,15 @@ function injectHero(){
 
   hdr.insertAdjacentElement('afterend', hero);
 
-  /* Search enter key */
   var inp = document.getElementById('cozySearchInput');
   if(inp) inp.addEventListener('keydown', function(e){
     if(e.key==='Enter' && this.value)
       window.location = '/search?q=' + encodeURIComponent(this.value);
   });
+
+  /* Menu button → open custom overlay */
+  var menuBtn = hero.querySelector('.ch-menu-open');
+  if(menuBtn) menuBtn.addEventListener('click', openMenuOverlay);
 
   initCarousel();
 }
@@ -206,7 +203,7 @@ function initSlider(){
   });
 }
 
-/* ══ 4. ACC PILL — before products ═════════════════════════ */
+/* ══ 4. ACC PILL ═══════════════════════════════════════════ */
 function injectAccPill(){
   if(document.getElementById('cozy-acc')) return;
 
@@ -234,7 +231,7 @@ function injectAccPill(){
   section.parentNode.insertBefore(wrap, section);
 }
 
-/* ══ 5. CONTACT SECTION — before footer ════════════════════ */
+/* ══ 5. CONTACT SECTION ════════════════════════════════════ */
 function injectContactSection(){
   if(document.getElementById('cozy-cs')) return;
 
@@ -245,64 +242,38 @@ function injectContactSection(){
   cs.id = 'cozy-cs';
   cs.className = 'cozy-cs';
   cs.innerHTML =
-
     '<div class="cozy-divider"></div>'+
-
     '<div class="cozy-social-section">'+
       '<p class="cozy-follow-title">Follow Us On:</p>'+
       '<div class="cozy-social-icons">'+
-
-        /* Instagram */
         '<button class="cozy-soc-btn" onclick="window.open(\'https://www.instagram.com/\',\'_blank\')" aria-label="Instagram">'+
-          '<img src="'+GH+'instagram.png" alt="Instagram" '+
-               'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"/>'+
-          '<svg style="display:none" viewBox="0 0 24 24" fill="none" stroke="#1A1411" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+
-            '<rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#1A1411" stroke="none"/>'+
-          '</svg>'+
+          '<img src="'+GH+'instagram.png" alt="Instagram" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"/>'+
+          '<svg style="display:none" viewBox="0 0 24 24" fill="none" stroke="#1A1411" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#1A1411" stroke="none"/></svg>'+
         '</button>'+
-
-        /* TikTok */
         '<button class="cozy-soc-btn" onclick="window.open(\'https://www.tiktok.com/\',\'_blank\')" aria-label="TikTok">'+
-          '<img src="'+GH+'tiktok.png" alt="TikTok" '+
-               'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"/>'+
-          '<svg style="display:none" viewBox="0 0 24 24" fill="#1A1411">'+
-            '<path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.75a8.2 8.2 0 004.79 1.53V6.84a4.85 4.85 0 01-1.02-.15z"/>'+
-          '</svg>'+
+          '<img src="'+GH+'tiktok.png" alt="TikTok" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"/>'+
+          '<svg style="display:none" viewBox="0 0 24 24" fill="#1A1411"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.75a8.2 8.2 0 004.79 1.53V6.84a4.85 4.85 0 01-1.02-.15z"/></svg>'+
         '</button>'+
-
-        /* WhatsApp */
         '<button class="cozy-soc-btn" onclick="window.open(\'https://wa.me/966503676809\',\'_blank\')" aria-label="WhatsApp">'+
-          '<img src="'+GH+'whatsapp.png" alt="WhatsApp" '+
-               'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"/>'+
-          '<svg style="display:none" viewBox="0 0 24 24" fill="#1A1411">'+
-            '<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>'+
-          '</svg>'+
+          '<img src="'+GH+'whatsapp.png" alt="WhatsApp" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"/>'+
+          '<svg style="display:none" viewBox="0 0 24 24" fill="#1A1411"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>'+
         '</button>'+
-
       '</div>'+
     '</div>'+
-
-    /* Phone CTA */
     '<a class="cozy-phone-cta" href="tel:+966503676809">'+
       '<span class="cozy-phone-number">tel:+966503676809</span>'+
       '<div class="cozy-call-circle">'+
-        '<svg viewBox="0 0 24 24" fill="none" stroke="#1A1411" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
-          '<path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.7 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012.6 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.57a16 16 0 006.29 6.29l.96-.9a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>'+
-        '</svg>'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="#1A1411" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.7 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012.6 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.57a16 16 0 006.29 6.29l.96-.9a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>'+
       '</div>'+
     '</a>'+
-
-    /* Info panel */
     '<div class="cozy-info-panel">'+
       '<div class="cozy-logos-row">'+
         '<div class="cozy-store-logo">'+
-          '<img src="'+GH+'logo-menu.png" alt="Cozy Style" '+
-               'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"/>'+
+          '<img src="'+GH+'logo-menu.png" alt="Cozy Style" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'"/>'+
           '<span class="cozy-logo-name" style="display:none">Cozy Style</span>'+
         '</div>'+
         '<div class="cozy-ministry">'+
-          '<img src="'+GH+'ministryofcommerce.png" alt="وزارة التجارة" '+
-               'onerror="this.style.display=\'none\'"/>'+
+          '<img src="'+GH+'ministryofcommerce.png" alt="وزارة التجارة" onerror="this.style.display=\'none\'"/>'+
         '</div>'+
       '</div>'+
       '<div class="cozy-pay-row">'+
@@ -316,7 +287,363 @@ function injectContactSection(){
   footer.parentNode.insertBefore(cs, footer);
 }
 
-/* ══ 6. TRANSPARENT BACKGROUNDS ════════════════════════════ */
+/* ══ 6. MENU OVERLAY ══════════════════════════════════════ */
+var ARROW_SVG = '<svg class="cmo-arrow" viewBox="0 0 24 24" fill="none" stroke="#1A1411" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;opacity:.3"><polyline points="9 18 15 12 9 6"/></svg>';
+
+/* Default menu items (will be replaced by Salla data) */
+var DEFAULT_MENU = [
+  {icon:'🏠', name:'Home',           url:'/'},
+  {icon:'🛋️', name:'Furniture',      url:'/categories'},
+  {icon:'🪴', name:'Accessories',    url:'/categories'},
+  {icon:'✨', name:'New Arrivals',   url:'/new'},
+  {icon:'🔥', name:'Special Offers', url:'/offers'}
+];
+
+function buildMenuItems(items){
+  return items.map(function(item){
+    return '<a href="'+item.url+'" class="cmo-cat-item">'+
+      '<div class="cmo-cat-left">'+
+        '<span class="cmo-cat-icon">'+item.icon+'</span>'+
+        '<span class="cmo-cat-name">'+item.name+'</span>'+
+      '</div>'+
+      ARROW_SVG+
+    '</a>';
+  }).join('');
+}
+
+function injectMenuOverlay(){
+  if(document.getElementById('cozy-menu-overlay')) return;
+
+  var overlay = document.createElement('div');
+  overlay.id = 'cozy-menu-overlay';
+  overlay.setAttribute('aria-hidden','true');
+  overlay.innerHTML =
+    '<div class="cmo-wrap">'+
+      '<div class="cmo-header">'+
+        '<img class="cmo-logo" src="'+GH+'logo-menu.png" alt="Cozy Style" '+
+             'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline\'"/>'+
+        '<span style="display:none;font-weight:900;font-size:18px;color:#1A1411;letter-spacing:.08em">COZY STYLE</span>'+
+        '<button class="cmo-close" aria-label="Close menu">'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="#1A1411" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">'+
+            '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'+
+          '</svg>'+
+        '</button>'+
+      '</div>'+
+
+      '<div class="cmo-cat-list" id="cmoCatList">'+
+        buildMenuItems(DEFAULT_MENU)+
+      '</div>'+
+
+      '<div class="cmo-footer">'+
+        '<div class="cmo-sub-links">'+
+          '<a href="/contact"       class="cmo-sub-link">Contact Us</a>'+
+          '<a href="/profile"       class="cmo-sub-link">My Account</a>'+
+          '<a href="/orders"        class="cmo-sub-link">Order Tracking</a>'+
+          '<a href="/about"         class="cmo-sub-link">About Us</a>'+
+          '<a href="/policies/terms" class="cmo-sub-link">Terms &amp; Conditions</a>'+
+        '</div>'+
+        '<div class="cmo-social-row">'+
+          '<a href="https://www.instagram.com/" target="_blank" class="cmo-soc-icon">'+
+            '<img src="'+GH+'instagram.png" alt="Instagram" onerror="this.style.display=\'none\'"/>'+
+          '</a>'+
+          '<a href="https://www.tiktok.com/" target="_blank" class="cmo-soc-icon">'+
+            '<img src="'+GH+'tiktok.png" alt="TikTok" onerror="this.style.display=\'none\'"/>'+
+          '</a>'+
+          '<a href="https://wa.me/966503676809" target="_blank" class="cmo-soc-icon">'+
+            '<img src="'+GH+'whatsapp.png" alt="WhatsApp" onerror="this.style.display=\'none\'"/>'+
+          '</a>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('.cmo-close').addEventListener('click', closeMenuOverlay);
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) closeMenuOverlay(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeMenuOverlay(); });
+
+  /* Load real Salla navigation asynchronously */
+  loadSallaNavigation();
+}
+
+function loadSallaNavigation(){
+  var icons = ['🏠','🛋️','🪴','✨','🔥','🏮','🛏️','🖼️','💡','🪑','🌿'];
+
+  /* 1. Try Salla store object (available inside Salla theme context) */
+  var sm = window.salla && (window.salla.store || window.salla);
+  var sallaMenus = (sm && (sm.menus || sm.navigation || sm.menu)) ? (sm.menus || sm.navigation || sm.menu) : null;
+  if(sallaMenus && sallaMenus.length){
+    renderNavItems(sallaMenus, icons, true);
+    return;
+  }
+
+  /* 2. Try Salla categories REST API */
+  fetch('/api/store/v1/categories', { headers: {'Accept':'application/json','X-Requested-With':'XMLHttpRequest'} })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      var cats = data && (data.data || (Array.isArray(data) ? data : null));
+      if(!cats || !cats.length) throw new Error('no data');
+      var items = [{icon:'🏠', name:'Home', url:'/'}];
+      cats.slice(0, 6).forEach(function(cat, i){
+        items.push({
+          icon: icons[(i + 1) % icons.length],
+          name: cat.name || cat.title || 'Category',
+          url:  cat.url  || ('/categories/' + (cat.slug || cat.id || ''))
+        });
+      });
+      var list = document.getElementById('cmoCatList');
+      if(list) list.innerHTML = buildMenuItems(items);
+    })
+    .catch(function(){
+      /* 3. Try menus API */
+      fetch('/api/store/v1/menus', { headers: {'Accept':'application/json','X-Requested-With':'XMLHttpRequest'} })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(data){
+          var menus = data && (data.data || (Array.isArray(data) ? data : null));
+          if(!menus || !menus.length) return;
+          renderNavItems(menus, icons, false);
+        })
+        .catch(function(){});/* silent — default items already shown */
+    });
+}
+
+function renderNavItems(items, icons, isCategories){
+  var built = [{icon:'🏠', name:'Home', url:'/'}];
+  items.slice(0, 5).forEach(function(item, i){
+    built.push({
+      icon: icons[(i + 1) % icons.length],
+      name: item.name || item.title || 'Menu',
+      url:  item.url  || item.link || (isCategories ? ('/categories/' + (item.slug || item.id || '')) : '#')
+    });
+  });
+  var list = document.getElementById('cmoCatList');
+  if(list) list.innerHTML = buildMenuItems(built);
+}
+
+function openMenuOverlay(){
+  var overlay = document.getElementById('cozy-menu-overlay');
+  if(!overlay){ injectMenuOverlay(); overlay = document.getElementById('cozy-menu-overlay'); }
+  if(overlay){
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden','false');
+    document.body.classList.add('cmo-body-open');
+  }
+}
+
+function closeMenuOverlay(){
+  var overlay = document.getElementById('cozy-menu-overlay');
+  if(overlay){
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.classList.remove('cmo-body-open');
+  }
+}
+
+/* ══ 7. PRODUCT CARD SHADOW DOM STYLING ════════════════════ */
+/*  Injected directly into salla-product-card shadow roots   */
+var CARD_SHADOW_CSS = [
+  /* Host = the outer salla-product-card element */
+  ':host{',
+    'display:block!important;',
+    'background:rgba(252,248,244,.95)!important;',
+    'border-radius:clamp(14px,3.5vw,22px)!important;',
+    'box-shadow:0 2px 14px rgba(26,20,17,.09)!important;',
+    'border:1px solid rgba(196,168,130,.18)!important;',
+    'overflow:hidden!important;',
+    'padding:clamp(10px,2.5vw,16px)!important;',
+    'transition:transform .25s,box-shadow .25s!important;',
+    'display:flex!important;',
+    'flex-direction:column!important;',
+    'align-items:stretch!important;',
+  '}',
+  ':host(:hover){transform:translateY(-4px)!important;box-shadow:0 12px 36px rgba(26,20,17,.14)!important;}',
+
+  /* Image container — white bg, square, centered */
+  '[class*="image"],[class*="img"],[class*="thumb"],[class*="photo"],[class*="media"],[class*="picture"]{',
+    'background:#fff!important;',
+    'border-radius:12px!important;',
+    'aspect-ratio:1/1!important;',
+    'width:100%!important;',
+    'display:flex!important;',
+    'align-items:center!important;',
+    'justify-content:center!important;',
+    'padding:clamp(6px,1.5vw,12px)!important;',
+    'margin-bottom:clamp(8px,2vw,14px)!important;',
+    'overflow:hidden!important;',
+    'box-sizing:border-box!important;',
+  '}',
+  '[class*="image"] img,[class*="img"] img,[class*="thumb"] img,[class*="media"] img{',
+    'max-width:100%!important;max-height:100%!important;',
+    'object-fit:contain!important;',
+    'width:100%!important;height:100%!important;',
+  '}',
+
+  /* Top action row (wishlist + options) */
+  '[class*="actions"],[class*="top"]:not([class*="image"]):not([class*="img"]),[class*="header"]:not(header){',
+    'display:flex!important;',
+    'align-items:center!important;',
+    'justify-content:space-between!important;',
+    'width:100%!important;',
+    'margin-bottom:clamp(6px,1.8vw,12px)!important;',
+  '}',
+
+  /* Wishlist button — gradient square with + icon */
+  '[class*="wishlist"],[class*="favorite"],[class*="fav"],[class*="like"],[class*="wish"]{',
+    'width:clamp(34px,8.5vw,48px)!important;',
+    'height:clamp(34px,8.5vw,48px)!important;',
+    'min-width:clamp(34px,8.5vw,48px)!important;',
+    'border-radius:clamp(10px,2.5vw,15px)!important;',
+    'background:linear-gradient(135deg,#1A1411 0%,#755C4C 100%)!important;',
+    'border:none!important;cursor:pointer!important;',
+    'flex-shrink:0!important;',
+    'display:flex!important;',
+    'align-items:center!important;',
+    'justify-content:center!important;',
+    'padding:0!important;',
+    'box-shadow:0 4px 12px rgba(26,20,17,.30)!important;',
+    'transition:opacity .2s!important;',
+  '}',
+  '[class*="wishlist"]:hover,[class*="favorite"]:hover,[class*="fav"]:hover{opacity:.82!important;}',
+  '[class*="wishlist"] svg,[class*="favorite"] svg,[class*="fav"] svg,',
+  '[class*="wishlist"] i,[class*="favorite"] i,[class*="fav"] i{',
+    'color:white!important;stroke:white!important;fill:none!important;',
+    'width:clamp(14px,3.5vw,20px)!important;height:clamp(14px,3.5vw,20px)!important;',
+  '}',
+
+  /* Add to cart button — full-width gradient pill */
+  'button[class*="add"]:not([class*="wishlist"]):not([class*="fav"]),',
+  'button[class*="cart"],button[class*="buy"],button[class*="order"],',
+  '[class*="add-to-cart"],',
+  'salla-add-product-button button,',
+  'button[type="submit"]{',
+    'background:linear-gradient(135deg,#1A1411 0%,#755C4C 100%)!important;',
+    'color:#fff!important;',
+    'border:none!important;',
+    'border-radius:999px!important;',
+    'font-weight:800!important;',
+    'font-size:clamp(11px,2.8vw,15px)!important;',
+    'box-shadow:0 4px 14px rgba(26,20,17,.24)!important;',
+    'padding:clamp(10px,2.5vw,14px) 6px!important;',
+    'width:100%!important;',
+    'cursor:pointer!important;',
+    'text-align:center!important;',
+    'display:block!important;',
+    'transition:opacity .2s!important;',
+    'margin-bottom:clamp(7px,1.8vw,12px)!important;',
+    'letter-spacing:.02em!important;',
+  '}',
+  'button[class*="add"]:hover,button[class*="cart"]:hover,button[type="submit"]:hover{opacity:.86!important;}',
+  'button[disabled],button[class*="disabled"]{',
+    'background:rgba(26,20,17,.15)!important;',
+    'color:#888!important;box-shadow:none!important;',
+  '}',
+
+  /* Product name */
+  '[class*="name"],[class*="title"],[class*="product-name"],h3,h4{',
+    'font-weight:700!important;',
+    'color:#1A1411!important;',
+    'text-align:center!important;',
+    'font-size:clamp(11px,2.8vw,15px)!important;',
+    'margin-bottom:clamp(2px,.6vw,4px)!important;',
+    'line-height:1.3!important;',
+  '}',
+
+  /* Price */
+  '[class*="price"],[class*="amount"],[class*="cost"]{',
+    'font-weight:800!important;',
+    'color:#1A1411!important;',
+    'text-align:center!important;',
+    'font-size:clamp(11px,2.8vw,15px)!important;',
+  '}',
+
+  /* Suppress default borders / backgrounds */
+  '*{box-sizing:border-box;}',
+  'a{text-decoration:none!important;}',
+].join('');
+
+function styleProductCards(){
+  document.querySelectorAll('salla-product-card').forEach(function(card){
+    if(card._cozyStyled) return;
+
+    /* Light DOM approach — add inline styles to the card itself */
+    card.style.cssText += [
+      'background:rgba(252,248,244,.95)!important',
+      'border-radius:clamp(14px,3.5vw,22px)',
+      'box-shadow:0 2px 14px rgba(26,20,17,.09)',
+      'border:1px solid rgba(196,168,130,.18)',
+      'overflow:hidden',
+      'padding:clamp(10px,2.5vw,16px)',
+      'display:flex',
+      'flex-direction:column'
+    ].join(';');
+
+    /* Shadow DOM injection */
+    if(card.shadowRoot){
+      var existing = card.shadowRoot.getElementById('cozy-card-style');
+      if(!existing){
+        var st = document.createElement('style');
+        st.id = 'cozy-card-style';
+        st.textContent = CARD_SHADOW_CSS;
+        card.shadowRoot.appendChild(st);
+      }
+    }
+
+    card._cozyStyled = true;
+  });
+
+  /* Also style salla-wishlist-btn and salla-add-product-button shadow roots */
+  document.querySelectorAll('salla-wishlist-btn').forEach(function(el){
+    if(el._cozyWStyled) return;
+    el._cozyWStyled = true;
+    if(!el.shadowRoot) return;
+    var st = document.createElement('style');
+    st.textContent = [
+      ':host{',
+        'width:clamp(34px,8.5vw,48px)!important;',
+        'height:clamp(34px,8.5vw,48px)!important;',
+        'border-radius:clamp(10px,2.5vw,15px)!important;',
+        'background:linear-gradient(135deg,#1A1411 0%,#755C4C 100%)!important;',
+        'display:flex!important;align-items:center!important;justify-content:center!important;',
+        'border:none!important;cursor:pointer!important;',
+        'box-shadow:0 4px 12px rgba(26,20,17,.30)!important;',
+        'overflow:hidden!important;',
+      '}',
+      'button,a{',
+        'background:transparent!important;border:none!important;',
+        'display:flex!important;align-items:center!important;justify-content:center!important;',
+        'width:100%!important;height:100%!important;padding:0!important;cursor:pointer!important;',
+      '}',
+      'svg,i{color:white!important;stroke:white!important;fill:none!important;',
+        'width:clamp(14px,3.5vw,20px)!important;height:clamp(14px,3.5vw,20px)!important;}',
+    ].join('');
+    el.shadowRoot.appendChild(st);
+  });
+
+  document.querySelectorAll('salla-add-product-button').forEach(function(el){
+    if(el._cozyAStyled) return;
+    el._cozyAStyled = true;
+    if(!el.shadowRoot) return;
+    var st = document.createElement('style');
+    st.textContent = [
+      ':host{display:block!important;width:100%!important;}',
+      'button{',
+        'background:linear-gradient(135deg,#1A1411 0%,#755C4C 100%)!important;',
+        'color:#fff!important;border:none!important;border-radius:999px!important;',
+        'font-weight:800!important;font-size:clamp(11px,2.8vw,15px)!important;',
+        'box-shadow:0 4px 14px rgba(26,20,17,.24)!important;',
+        'padding:clamp(10px,2.5vw,14px) 6px!important;',
+        'width:100%!important;cursor:pointer!important;text-align:center!important;',
+        'display:block!important;transition:opacity .2s!important;',
+        'margin-bottom:clamp(7px,1.8vw,12px)!important;',
+      '}',
+      'button:hover{opacity:.86!important;}',
+      'button[disabled]{background:rgba(26,20,17,.15)!important;color:#888!important;box-shadow:none!important;}',
+    ].join('');
+    el.shadowRoot.appendChild(st);
+  });
+}
+
+/* ══ 8. TRANSPARENT BACKGROUNDS ════════════════════════════ */
 function fixBackgrounds(){
   var els = document.querySelectorAll(
     'main, #main, .s-layout, [class*="layout"],[class*="page-wrapper"],[class*="main-content"]'
@@ -328,7 +655,7 @@ function fixBackgrounds(){
   });
 }
 
-/* ══ 7. FLOATING BOTTOM NAV (all pages) ════════════════════ */
+/* ══ 9. FLOATING BOTTOM NAV ════════════════════════════════ */
 function injectBottomNav(){
   if(document.getElementById('cozy-bottom-nav')) return;
 
@@ -336,23 +663,26 @@ function injectBottomNav(){
   nav.id = 'cozy-bottom-nav';
   nav.setAttribute('aria-label','Main navigation');
   nav.innerHTML =
-    /* Profile */
     '<a href="/profile" class="cnb-btn" aria-label="Profile">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4.5"/><path d="M3.5 21c0-5 3.8-8.5 8.5-8.5s8.5 3.5 8.5 8.5"/></svg>'+
     '</a>'+
-    /* Home */
     '<a href="/" class="cnb-btn" aria-label="Home">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>'+
     '</a>'+
-    /* Cart */
     '<a href="/cart" class="cnb-btn" aria-label="Cart">'+
       '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>'+
-    '</a>';
+    '</a>'+
+    '<button class="cnb-btn cnb-menu-btn" aria-label="Menu" style="background:none;border:none;cursor:pointer;">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>'+
+    '</button>';
 
   document.body.appendChild(nav);
+
+  var menuBtn = nav.querySelector('.cnb-menu-btn');
+  if(menuBtn) menuBtn.addEventListener('click', openMenuOverlay);
 }
 
-/* ══ 8. MUTATION OBSERVER — re-run on dynamic load ═════════ */
+/* ══ 10. MUTATION OBSERVER ═════════════════════════════════ */
 function observe(){
   var ob = new MutationObserver(function(){
     injectHeader();
@@ -360,7 +690,7 @@ function observe(){
     injectContactSection();
     injectBottomNav();
     fixBackgrounds();
-    /* Hero + Slider only on homepage */
+    styleProductCards();
     if(isHomepage()){
       injectHero();
       injectSlider();
@@ -379,21 +709,25 @@ ready(function(){
   fixBackgrounds();
   injectHeader();
   injectBottomNav();
+  injectMenuOverlay();
+  styleProductCards();
+
   if(isHomepage()){
     injectHero();
     injectSlider();
     injectAccPill();
     injectContactSection();
   } else {
-    /* On inner pages inject contact section above footer */
     injectContactSection();
   }
+
   observe();
-  /* re-run after lazy content */
+
   setTimeout(function(){
     injectHeader();
     injectBottomNav();
     fixBackgrounds();
+    styleProductCards();
     if(isHomepage()){
       injectHero();
       injectSlider();
