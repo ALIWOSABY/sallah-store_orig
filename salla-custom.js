@@ -328,36 +328,78 @@ function fixBackgrounds(){
   });
 }
 
-/* ══ 7. MUTATION OBSERVER — re-run on dynamic load ═════════ */
+/* ══ 7. FLOATING BOTTOM NAV (all pages) ════════════════════ */
+function injectBottomNav(){
+  if(document.getElementById('cozy-bottom-nav')) return;
+
+  var nav = document.createElement('nav');
+  nav.id = 'cozy-bottom-nav';
+  nav.setAttribute('aria-label','Main navigation');
+  nav.innerHTML =
+    /* Profile */
+    '<a href="/profile" class="cnb-btn" aria-label="Profile">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4.5"/><path d="M3.5 21c0-5 3.8-8.5 8.5-8.5s8.5 3.5 8.5 8.5"/></svg>'+
+    '</a>'+
+    /* Home */
+    '<a href="/" class="cnb-btn" aria-label="Home">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>'+
+    '</a>'+
+    /* Cart */
+    '<a href="/cart" class="cnb-btn" aria-label="Cart">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>'+
+    '</a>';
+
+  document.body.appendChild(nav);
+}
+
+/* ══ 8. MUTATION OBSERVER — re-run on dynamic load ═════════ */
 function observe(){
   var ob = new MutationObserver(function(){
     injectHeader();
-    injectHero();
-    injectSlider();
     injectAccPill();
     injectContactSection();
+    injectBottomNav();
     fixBackgrounds();
+    /* Hero + Slider only on homepage */
+    if(isHomepage()){
+      injectHero();
+      injectSlider();
+    }
   });
   ob.observe(document.body, {childList:true, subtree:true});
 }
 
 /* ══ RUN ════════════════════════════════════════════════════ */
+function isHomepage(){
+  var p = window.location.pathname;
+  return p === '/' || p === '/index.html' || p === '';
+}
+
 ready(function(){
   fixBackgrounds();
   injectHeader();
-  injectHero();
-  injectSlider();
-  injectAccPill();
-  injectContactSection();
-  observe();
-  /* re-run after lazy content */
-  setTimeout(function(){
-    injectHeader();
+  injectBottomNav();
+  if(isHomepage()){
     injectHero();
     injectSlider();
     injectAccPill();
     injectContactSection();
+  } else {
+    /* On inner pages inject contact section above footer */
+    injectContactSection();
+  }
+  observe();
+  /* re-run after lazy content */
+  setTimeout(function(){
+    injectHeader();
+    injectBottomNav();
     fixBackgrounds();
+    if(isHomepage()){
+      injectHero();
+      injectSlider();
+      injectAccPill();
+      injectContactSection();
+    }
   }, 2000);
 });
 
