@@ -172,20 +172,20 @@ salla-product-card:hover,[class*="product-card"]:hover {
   transform:  translateY(-4px) !important;
   box-shadow: 0 12px 36px rgba(26,20,17,.14) !important;
 }
-/* Product image — white square */
+/* Product image container — transparent (card itself is the white bg) */
 [class*="product-card"] [class*="image"],
 [class*="product-card"] [class*="img"],
 [class*="product-card"] [class*="thumb"],
 [class*="product-card"] [class*="media"],
 .s-product-card [class*="image"] {
-  background:   #fff !important;
+  background:   transparent !important;
   border-radius:12px !important;
   aspect-ratio: 1/1  !important;
   width:        100% !important;
   display:      flex !important;
   align-items:  center !important;
   justify-content:center !important;
-  padding:      clamp(6px,1.5vw,12px) !important;
+  padding:      clamp(4px,1vw,8px) !important;
   margin-bottom:clamp(8px,2vw,14px) !important;
   overflow:     hidden !important;
 }
@@ -439,16 +439,38 @@ salla-cart,[class*="cart-page"],[class*="s-cart"],
   height:        clamp(70px,18vw,90px) !important;
   flex-shrink:   0 !important;
 }
-[class*="cart-item"] [class*="name"],[class*="cart-item"] [class*="title"] {
-  font-weight:700 !important;color:var(--dark) !important;
-  font-size:clamp(13px,3.5vw,16px) !important;
+/* Cart item info column */
+[class*="cart-item"] [class*="info"],
+[class*="cart-item"] [class*="details"],
+[class*="cart-item"] [class*="data"],
+salla-cart-item [class*="info"] {
+  flex:1 !important;display:flex !important;flex-direction:column !important;
+  gap:4px !important;min-width:0 !important;overflow:hidden !important;
 }
-[class*="cart-item"] [class*="price"],[class*="cart-item"] salla-price {
+[class*="cart-item"] [class*="name"],[class*="cart-item"] [class*="title"],
+salla-cart-item [class*="name"] {
+  font-weight:700 !important;color:var(--dark) !important;
+  font-size:clamp(12px,3.2vw,15px) !important;
+  white-space:nowrap !important;overflow:hidden !important;text-overflow:ellipsis !important;
+  max-width:100% !important;
+}
+[class*="cart-item"] [class*="price"],[class*="cart-item"] salla-price,
+salla-cart-item salla-price {
   color:var(--brown) !important;font-weight:800 !important;
   font-size:clamp(12px,3.2vw,15px) !important;
 }
 [class*="cart-item"] [class*="qty"],[class*="cart-item"] salla-quantity-input {
   background:rgba(26,20,17,.06) !important;border-radius:999px !important;padding:4px 10px !important;
+}
+/* Mini cart drawer */
+salla-cart-drawer,[class*="cart-drawer"],[class*="cart-sidebar"],
+[class*="mini-cart"],[class*="cart-popup"] {
+  background:var(--card2) !important;
+  border-radius:clamp(20px,5vw,28px) 0 0 clamp(20px,5vw,28px) !important;
+}
+[class*="cart-drawer"] [class*="header"],[class*="mini-cart"] [class*="header"] {
+  font-weight:800 !important;font-size:clamp(16px,4vw,20px) !important;color:var(--dark) !important;
+  padding:clamp(16px,4vw,24px) !important;border-bottom:1px solid rgba(26,20,17,.08) !important;
 }
 /* Remove button — red circle */
 [class*="remove"],[class*="delete-item"],[class*="cart-remove"] {
@@ -510,13 +532,83 @@ salla-product-card [class*="meta"],
   padding:       0 !important;
 }
 
+/* ══ PRODUCT OPTIONS (salla-product-options) ══════════════════════════ */
+salla-product-options,
+.s-product-options-wrapper,
+salla-conditional-fields {
+  display:block !important;width:100% !important;
+}
+.s-product-options-option-container {
+  margin-bottom:clamp(10px,2.5vw,14px) !important;
+}
+.s-product-options-option {
+  background:rgba(255,255,255,.60) !important;
+  border-radius:14px !important;
+  border:1px solid rgba(26,20,17,.10) !important;
+  padding:clamp(10px,2.5vw,14px) !important;
+}
+.s-product-options-option-label {
+  display:flex !important;align-items:center !important;justify-content:space-between !important;
+  font-family:'Raleway',sans-serif !important;font-weight:700 !important;
+  font-size:clamp(12px,3vw,14px) !important;color:var(--dark) !important;
+  margin-bottom:8px !important;
+}
+.s-product-options-option-label b { font-weight:800 !important;color:var(--dark) !important; }
+.s-product-options-option-label span { color:#c0392b !important;font-weight:700 !important; }
+.s-product-options-option-label small {
+  font-family:'Raleway',sans-serif !important;
+  font-weight:600 !important;font-size:12px !important;
+  color:rgba(26,20,17,.50) !important;
+}
+.s-product-options-option-content { width:100% !important; }
+.s-product-options-option-content select,
+.s-product-options-option-content .s-form-control {
+  width:100% !important;
+  padding:clamp(10px,2.5vw,13px) clamp(12px,3vw,16px) !important;
+  border-radius:10px !important;
+  border:1.5px solid rgba(26,20,17,.15) !important;
+  background:rgba(255,255,255,.85) !important;
+  font-family:'Poppins','Montserrat',sans-serif !important;
+  font-size:clamp(13px,3.2vw,15px) !important;
+  color:var(--dark) !important;
+  cursor:pointer !important;
+  outline:none !important;
+  appearance:auto !important;
+  -webkit-appearance:auto !important;
+}
+.s-product-options-option-content select:focus,
+.s-product-options-option-content .s-form-control:focus {
+  border-color:var(--brown) !important;
+  background:#fff !important;
+  box-shadow:0 0 0 3px rgba(117,92,76,.12) !important;
+}
+/* Color/image swatches row */
+.s-product-options-option-content [class*="swatch"],
+.s-product-options-option-content [class*="option-item"] {
+  border-radius:8px !important;border:2px solid rgba(26,20,17,.12) !important;
+  cursor:pointer !important;transition:border-color .2s,box-shadow .2s !important;
+}
+.s-product-options-option-content [class*="swatch"][class*="active"],
+.s-product-options-option-content [class*="option-item"][class*="selected"] {
+  border-color:var(--brown) !important;
+  box-shadow:0 0 0 2px rgba(117,92,76,.25) !important;
+}
+
 /* ══ CHECKOUT PAGE ════════════════════════════════════════════════════ */
 /* Page wrapper */
 [class*="checkout-page"],[class*="s-checkout"],
-salla-checkout,[class*="checkout-layout"] {
+salla-checkout,[class*="checkout-layout"],
+.s-checkout__wrapper,.s-checkout__container,
+.s-checkout__content,.s-layout-checkout {
   background: transparent !important;
 }
-/* Main checkout cards (address, payment, shipping sections) */
+/* Main checkout cards — uses actual Salla class names from screenshot */
+.s-checkout__block,
+.s-checkout__order-details,
+.s-checkout__address,
+.s-checkout__shipping,
+.s-checkout__payment,
+.s-checkout__extra,
 [class*="s-checkout__block"],
 [class*="checkout-block"],
 [class*="checkout-section"],
@@ -527,11 +619,69 @@ salla-checkout,[class*="checkout-layout"] {
 salla-checkout > * > div > div,
 [class*="checkout-card"] {
   background:    var(--card2) !important;
-  border-radius: clamp(20px,5vw,28px) !important;
+  border-radius: clamp(16px,4vw,24px) !important;
   padding:       clamp(16px,4vw,24px) !important;
-  box-shadow:    0 8px 36px rgba(0,0,0,.12) !important;
+  box-shadow:    0 8px 36px rgba(0,0,0,.10) !important;
   margin-bottom: clamp(12px,3vw,18px) !important;
   border:        none !important;
+}
+/* Checkout section header titles */
+.s-checkout__block-header,
+.s-checkout__block-title,
+[class*="s-checkout__block"] h2,
+[class*="s-checkout__block"] h3,
+[class*="s-checkout"] [class*="section-title"] {
+  font-weight:800 !important;font-size:clamp(15px,4vw,18px) !important;
+  color:var(--dark) !important;
+  border-bottom:2px solid rgba(26,20,17,.05) !important;
+  padding-bottom:8px !important;margin-bottom:14px !important;display:block !important;
+}
+/* Checkout order totals / summary pill */
+.s-checkout__totals,
+.s-checkout__order-total,
+[class*="s-checkout__total"],
+[class*="s-checkout__summary"] {
+  background:var(--glass) !important;
+  backdrop-filter:blur(10px) !important;-webkit-backdrop-filter:blur(10px) !important;
+  border-radius:clamp(16px,4vw,24px) !important;
+  padding:clamp(14px,3.5vw,20px) !important;
+  border:1px solid rgba(255,255,255,.40) !important;
+  box-shadow:0 4px 20px rgba(0,0,0,.08) !important;
+}
+/* Coupon input */
+.s-checkout__coupon,[class*="coupon"] {
+  background:rgba(255,255,255,.70) !important;
+  border-radius:10px !important;
+  border:1px solid rgba(26,20,17,.12) !important;
+  padding:clamp(10px,2.5vw,13px) !important;
+}
+/* Apply coupon button */
+.s-checkout__coupon button,[class*="coupon"] button {
+  background:var(--grad) !important;color:#fff !important;
+  border:none !important;border-radius:8px !important;
+  font-weight:700 !important;padding:8px 18px !important;cursor:pointer !important;
+  white-space:nowrap !important;
+}
+/* Place order button */
+.s-checkout__place-order button,
+[class*="place-order"] button,
+salla-checkout-button button {
+  width:100% !important;padding:clamp(14px,3.8vw,18px) !important;
+  border-radius:999px !important;background:var(--grad) !important;
+  color:#fff !important;border:none !important;font-weight:800 !important;
+  font-size:clamp(13px,3.5vw,16px) !important;letter-spacing:.04em !important;
+  text-transform:uppercase !important;box-shadow:0 6px 20px rgba(26,20,17,.25) !important;
+  cursor:pointer !important;margin-top:14px !important;transition:opacity .2s,transform .2s !important;
+}
+/* Save address button */
+.s-checkout__address button[type="submit"],
+[class*="s-checkout"] button[class*="save"],
+[class*="s-checkout"] button[class*="submit"] {
+  background:var(--grad) !important;color:#fff !important;
+  border:none !important;border-radius:999px !important;
+  font-weight:800 !important;padding:clamp(12px,3vw,16px) !important;
+  width:100% !important;cursor:pointer !important;
+  box-shadow:0 4px 14px rgba(26,20,17,.22) !important;
 }
 /* Section titles inside checkout */
 [class*="checkout"] [class*="section-title"],
@@ -1073,7 +1223,7 @@ salla-button[size="block"],salla-button[block],
 .cmo-cat-left  { display:flex;align-items:center;gap:16px; }
 .cmo-cat-icon  { font-size:clamp(20px,5vw,24px);width:32px;text-align:center; }
 .cmo-cat-name  { font-weight:800;font-size:clamp(15px,4vw,18px);letter-spacing:.02em;color:var(--dark); }
-.cmo-cat-arrow { opacity:.3;transition:opacity .2s; }
+.cmo-cat-arrow { opacity:.3;transition:opacity .2s;width:18px!important;height:18px!important;flex-shrink:0; }
 
 /* Footer */
 .cmo-footer    { margin-top:40px;display:flex;flex-direction:column;gap:16px; }
