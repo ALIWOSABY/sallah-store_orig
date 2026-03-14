@@ -536,48 +536,102 @@ function closeMenuOverlay(){
 }
 
 /* ══ 9. PRODUCT CARDS — Shadow DOM injection ════════════════ */
+/* Matches designer p-card exactly:
+   LEFT  = wishlist (red circle)
+   RIGHT = quick-add (dark gradient square)
+   IMAGE = white square (aspect-ratio 1:1)
+   PILL  = "اضافة للسلة" gradient full-width
+   NAME  = clean text (no box bg)
+   PRICE = clean brown text (no box bg)
+*/
 var SHADOW_CSS =
-  ':host,[part="card"]{'+
+  /* ── Card base ── */
+  ':host{'+
     'background:rgba(252,248,244,.95)!important;'+
     'border-radius:clamp(14px,3.5vw,22px)!important;'+
     'padding:clamp(10px,2.5vw,16px)!important;'+
     'display:flex!important;flex-direction:column!important;align-items:center!important;'+
-    'box-shadow:0 4px 18px rgba(0,0,0,.07)!important;'+
-    'border:none!important;'+
+    'box-shadow:0 2px 14px rgba(0,0,0,.09)!important;'+
+    'overflow:hidden!important;border:1px solid rgba(196,168,130,.18)!important;'+
+  '}'+
+
+  /* ── NUKE duplicate inner-card backgrounds (the ugly layered boxes) ── */
+  '[class*="content"],[class*="info"],[class*="footer"],[class*="details"],'+
+  '[class*="body"],[class*="text"],[class*="meta"],[class*="bottom"],'+
+  '[class*="data"],[class*="wrap"],[class*="block"],[class*="section"]{'+
+    'background:transparent!important;box-shadow:none!important;'+
+    'border-radius:0!important;border:none!important;padding:0!important;'+
+  '}'+
+
+  /* ── Image – white square ── */
+  '[part="image"],[class*="image"],[class*="img"],[class*="media"],'+
+  '[class*="thumb"],[class*="photo"],[class*="picture"]{'+
+    'background:#fff!important;'+
+    'border-radius:clamp(10px,2.5vw,16px)!important;'+
+    'aspect-ratio:1/1!important;width:100%!important;'+
+    'display:flex!important;align-items:center!important;justify-content:center!important;'+
+    'padding:clamp(6px,1.5vw,12px)!important;'+
+    'margin-bottom:clamp(8px,2vw,14px)!important;'+
     'overflow:hidden!important;'+
   '}'+
-  '[part="image"],[class*="image"],[class*="img"]{'+
-    'border-radius:clamp(10px,2.5vw,16px)!important;'+
-    'background:#fff!important;'+
-    'aspect-ratio:1!important;'+
-    'width:100%!important;object-fit:contain!important;'+
-  '}'+
-  '[part="add-to-cart"],button[class*="add"],[class*="add-btn"]{'+
-    'background:linear-gradient(135deg,#1A1411 0%,#755C4C 100%)!important;'+
-    'border-radius:999px!important;'+
-    'width:100%!important;'+
-    'padding:clamp(10px,2.5vw,14px) 6px!important;'+
-    'color:#fff!important;font-weight:800!important;'+
+  'img{max-width:100%!important;max-height:100%!important;object-fit:contain!important;}'+
+
+  /* ── Wishlist – RED circle (left) ── */
+  '[part="wishlist"],salla-wishlist-btn,'+
+  'button[class*="wish"],button[class*="fav"],'+
+  '[class*="wishlist-btn"],[class*="favourite-btn"]{'+
+    'background:rgba(255,71,87,.12)!important;'+
+    'border-radius:50%!important;'+
+    'width:clamp(32px,8vw,40px)!important;height:clamp(32px,8vw,40px)!important;'+
     'border:none!important;cursor:pointer!important;'+
-    'font-size:clamp(12px,3vw,14px)!important;'+
+    'display:flex!important;align-items:center!important;justify-content:center!important;'+
+    'flex-shrink:0!important;transition:background .2s!important;'+
   '}'+
-  '[part="wishlist"],button[class*="wish"],[class*="wish-btn"]{'+
+  '[part="wishlist"] svg,button[class*="wish"] svg,salla-wishlist-btn svg,'+
+  '[class*="wishlist-btn"] svg{stroke:#ff4757!important;fill:none!important;'+
+    'width:clamp(16px,4vw,20px)!important;height:clamp(16px,4vw,20px)!important;}'+
+
+  /* ── Quick-add top-right – dark gradient SQUARE ── */
+  '[part="add"],[class*="quick-add"],button[class*="fast"],[class*="add-quick"]{'+
     'background:linear-gradient(135deg,#1A1411 0%,#755C4C 100%)!important;'+
     'border-radius:clamp(10px,2.5vw,15px)!important;'+
-    'width:clamp(34px,8.5vw,48px)!important;'+
-    'height:clamp(34px,8.5vw,48px)!important;'+
+    'width:clamp(32px,8vw,40px)!important;height:clamp(32px,8vw,40px)!important;'+
     'border:none!important;cursor:pointer!important;'+
+    'display:flex!important;align-items:center!important;justify-content:center!important;'+
+    'box-shadow:0 4px 12px rgba(26,20,17,.30)!important;flex-shrink:0!important;'+
   '}'+
-  '[part="wishlist"] svg,[class*="wish-btn"] svg{'+
-    'stroke:#fff!important;fill:none!important;'+
+  '[part="add"] svg,[class*="quick-add"] svg{stroke:#fff!important;fill:none!important;}'+
+
+  /* ── Add-to-cart pill (bottom, full-width) ── */
+  '[part="add-to-cart"],salla-add-product-button button,'+
+  'button[class*="add-to-cart"],button[class*="add-cart"],'+
+  '[class*="add-product"] button,[class*="cart-btn"]{'+
+    'background:linear-gradient(135deg,#1A1411 0%,#755C4C 100%)!important;'+
+    'border-radius:999px!important;width:100%!important;'+
+    'color:#fff!important;font-weight:800!important;'+
+    'padding:clamp(10px,2.5vw,14px) 6px!important;'+
+    'border:none!important;cursor:pointer!important;'+
+    'font-size:clamp(11px,2.8vw,15px)!important;'+
+    'margin:clamp(6px,1.5vw,10px) 0 clamp(3px,.8vw,5px)!important;'+
+    'display:block!important;text-align:center!important;'+
+    'box-shadow:0 4px 14px rgba(26,20,17,.24)!important;'+
   '}'+
-  '[part="name"],[class*="name"]{'+
-    'font-weight:700!important;font-size:clamp(13px,3.2vw,15px)!important;'+
-    'color:#1A1411!important;text-align:center!important;margin-top:8px!important;'+
+
+  /* ── Product name – clean text, NO box ── */
+  '[part="name"],[class*="name"],[class*="title"]{'+
+    'font-weight:700!important;font-size:clamp(11px,2.8vw,15px)!important;'+
+    'color:#1A1411!important;text-align:center!important;'+
+    'margin-bottom:clamp(2px,.6vw,4px)!important;'+
+    'background:transparent!important;box-shadow:none!important;'+
+    'border-radius:0!important;border:none!important;padding:2px 0!important;'+
   '}'+
-  '[part="price"],[class*="price"]{'+
-    'font-weight:900!important;color:#755C4C!important;'+
-    'font-size:clamp(14px,3.5vw,17px)!important;'+
+
+  /* ── Price – clean brown text, NO box ── */
+  '[part="price"],[class*="price"],salla-price{'+
+    'font-weight:800!important;font-size:clamp(11px,2.8vw,15px)!important;'+
+    'color:#755C4C!important;text-align:center!important;'+
+    'background:transparent!important;box-shadow:none!important;'+
+    'border-radius:0!important;border:none!important;padding:0!important;'+
   '}';
 
 function styleProductCards(){

@@ -201,30 +201,57 @@ salla-price,.s-product-card__price {
   font-size:clamp(11px,2.8vw,15px) !important;
 }
 
-/* ── Wishlist button → gradient square ── */
+/* ── Wishlist button → RED circle (matches designer screenshot) ── */
 salla-wishlist-btn,
 [class*="wishlist-btn"],
 [class*="wishlist"] > button,
 [class*="favourite-btn"],
 .s-product-card .s-wishlist-btn {
-  width:          clamp(34px,8.5vw,48px) !important;
-  height:         clamp(34px,8.5vw,48px) !important;
-  border-radius:  clamp(10px,2.5vw,15px) !important;
-  background:     var(--grad) !important;
-  border:         none !important;
-  box-shadow:     0 4px 12px rgba(26,20,17,.30) !important;
-  display:        flex !important;
-  align-items:    center !important;
-  justify-content:center !important;
-  padding:        0 !important;
-  flex-shrink:    0 !important;
-  transition:     opacity .2s !important;
+  width:           clamp(32px,8vw,40px) !important;
+  height:          clamp(32px,8vw,40px) !important;
+  border-radius:   50% !important;
+  background:      rgba(255,71,87,.12) !important;
+  border:          none !important;
+  display:         flex !important;
+  align-items:     center !important;
+  justify-content: center !important;
+  padding:         0 !important;
+  flex-shrink:     0 !important;
+  cursor:          pointer !important;
+  transition:      background .2s !important;
 }
-salla-wishlist-btn:hover{opacity:.82 !important;}
-salla-wishlist-btn svg,salla-wishlist-btn i,
-[class*="wishlist-btn"] svg,[class*="wishlist-btn"] i {
-  color:white !important;stroke:white !important;fill:none !important;
+salla-wishlist-btn:hover { background:rgba(255,71,87,.22) !important; }
+salla-wishlist-btn svg, salla-wishlist-btn i,
+[class*="wishlist-btn"] svg, [class*="wishlist-btn"] i {
+  stroke:#ff4757 !important; fill:none !important;
+  width:clamp(16px,4vw,20px) !important; height:clamp(16px,4vw,20px) !important;
 }
+/* Wishlisted (filled) state */
+salla-wishlist-btn[wishlisted] svg,
+salla-wishlist-btn[active] svg,
+salla-wishlist-btn.active svg {
+  fill:#ff4757 !important; stroke:#ff4757 !important;
+}
+
+/* ── Quick-add button (top-right corner) → dark gradient square ── */
+[class*="quick-add"],[class*="fast-add"],[class*="add-quick"],
+salla-product-card [part="add"],
+[class*="product-card"] [class*="add-icon"],
+[class*="product-card__add-btn"] {
+  width:           clamp(32px,8vw,40px) !important;
+  height:          clamp(32px,8vw,40px) !important;
+  border-radius:   clamp(10px,2.5vw,15px) !important;
+  background:      var(--grad) !important;
+  border:          none !important;
+  display:         flex !important;
+  align-items:     center !important;
+  justify-content: center !important;
+  cursor:          pointer !important;
+  flex-shrink:     0 !important;
+  box-shadow:      0 4px 12px rgba(26,20,17,.30) !important;
+}
+[class*="quick-add"] svg, [class*="fast-add"] svg,
+salla-product-card [part="add"] svg { stroke:#fff !important; fill:none !important; }
 
 /* ── Add-to-cart → full-width gradient pill ── */
 salla-add-product-button button,
@@ -423,6 +450,120 @@ salla-quantity-input,[class*="quantity-wrap"],[class*="qty-wrap"] {
   font-size:clamp(16px,4vw,20px) !important;font-weight:900 !important;
   color:var(--dark) !important;
   border-top:1px solid rgba(26,20,17,.10) !important;padding-top:12px !important;
+}
+
+/* ══ REMOVE DUPLICATE INNER CARD LAYERS (outer CSS, non-shadow) ══════ */
+/* Kills the ugly rounded-box backgrounds around name/price in Salla cards */
+salla-product-card [class*="content"],
+salla-product-card [class*="info"],
+salla-product-card [class*="footer"],
+salla-product-card [class*="details"],
+salla-product-card [class*="body"],
+salla-product-card [class*="bottom"],
+salla-product-card [class*="meta"],
+[class*="product-card"] [class*="content"],
+[class*="product-card"] [class*="info"],
+[class*="product-card"] [class*="footer"],
+[class*="product-card"] [class*="body"] {
+  background:    transparent !important;
+  box-shadow:    none !important;
+  border-radius: 0 !important;
+  border:        none !important;
+  padding:       0 !important;
+}
+
+/* ══ CHECKOUT PAGE ════════════════════════════════════════════════════ */
+/* Page wrapper */
+[class*="checkout-page"],[class*="s-checkout"],
+salla-checkout,[class*="checkout-layout"] {
+  background: transparent !important;
+}
+/* Main checkout cards (address, payment, shipping sections) */
+[class*="s-checkout__block"],
+[class*="checkout-block"],
+[class*="checkout-section"],
+[class*="order-section"],
+[class*="s-checkout__step"],
+[class*="s-checkout__form"],
+[class*="checkout-form-card"],
+salla-checkout > * > div > div,
+[class*="checkout-card"] {
+  background:    var(--card2) !important;
+  border-radius: clamp(20px,5vw,28px) !important;
+  padding:       clamp(16px,4vw,24px) !important;
+  box-shadow:    0 8px 36px rgba(0,0,0,.12) !important;
+  margin-bottom: clamp(12px,3vw,18px) !important;
+  border:        none !important;
+}
+/* Section titles inside checkout */
+[class*="checkout"] [class*="section-title"],
+[class*="checkout"] [class*="step-title"],
+[class*="checkout"] h2,[class*="checkout"] h3 {
+  font-weight:800 !important;
+  font-size:clamp(15px,4vw,18px) !important;
+  color:var(--dark) !important;
+  border-bottom:2px solid rgba(26,20,17,.05) !important;
+  padding-bottom:8px !important;
+  margin-bottom:12px !important;
+  display:block !important;
+}
+/* Address map container */
+[class*="address-map"],[class*="map-wrapper"],
+[class*="map-container"],[class*="s-map"],
+[id*="map"] {
+  border-radius: 16px !important;
+  overflow:      hidden !important;
+}
+/* Coupon input row */
+[class*="coupon-wrap"],[class*="coupon-form"],[class*="promo-code"] {
+  background:    var(--card2) !important;
+  border-radius: clamp(16px,4vw,22px) !important;
+  padding:       clamp(12px,3vw,16px) !important;
+  box-shadow:    0 4px 16px rgba(0,0,0,.07) !important;
+  margin-bottom: clamp(10px,2.5vw,14px) !important;
+}
+/* Order summary / totals block */
+[class*="order-summary"],
+[class*="checkout-summary"],
+[class*="s-checkout__summary"],
+[class*="price-summary"],
+[class*="totals-block"],
+[class*="s-checkout__total"] {
+  background:        var(--glass) !important;
+  backdrop-filter:   blur(10px) !important;
+  -webkit-backdrop-filter:blur(10px) !important;
+  border-radius:     clamp(20px,5vw,28px) !important;
+  padding:           clamp(16px,4vw,24px) !important;
+  border:            1px solid rgba(255,255,255,.40) !important;
+  box-shadow:        0 4px 20px rgba(0,0,0,.08) !important;
+  margin-bottom:     clamp(12px,3vw,18px) !important;
+}
+/* Summary rows */
+[class*="summary-row"],[class*="s-checkout__total"] [class*="row"],
+[class*="order-total-row"] {
+  display:flex !important;justify-content:space-between !important;align-items:center !important;
+  font-weight:600 !important;font-size:clamp(13px,3.5vw,15px) !important;
+  color:var(--dark) !important;margin-bottom:10px !important;
+}
+[class*="summary-row"][class*="total"],[class*="grand-total"],
+[class*="s-checkout__total"] [class*="grand"] {
+  font-size:clamp(18px,4vw,22px) !important;font-weight:900 !important;
+  border-top:1px solid rgba(26,20,17,.10) !important;padding-top:12px !important;
+  margin-bottom:0 !important;
+}
+/* Shipping options */
+[class*="shipping-method"],[class*="shipping-option"],
+[class*="s-shipping"],[class*="delivery-option"] {
+  background:rgba(255,255,255,.60) !important;
+  border-radius:12px !important;border:1.5px solid rgba(26,20,17,.10) !important;
+  padding:clamp(10px,2.5vw,14px) !important;cursor:pointer !important;
+  transition:all .2s !important;
+}
+[class*="shipping-method"].active,
+[class*="shipping-option"].active,
+[class*="shipping-option"][class*="selected"] {
+  border-color:var(--brown) !important;
+  background:rgba(196,168,130,.10) !important;
 }
 
 /* ── Checkout / Place Order buttons ── */
